@@ -1,10 +1,9 @@
 FROM python:3.10.12-slim
 
-WORKDIR /app
 
-COPY requirements.txt .
+ADD requirements.txt .
 RUN pip install -r requirements.txt
 
-ENV ???
+COPY app.py .
 
 CMD ["python3", "-u", "app.py"]

@@ -1,0 +1,125 @@
+
+services:
+  boat1_broker:
+    hostname: broker1
+    container_name:  boat1_broker
+    restart: always
+    image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+    cap_add:
+        - "NET_ADMIN"
+    environment:
+        - VANETZA_STATION_ID=51
+        - VANETZA_STATION_TYPE=15
+        - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:01
+        - VANETZA_INTERFACE=br0
+        - START_EMBEDDED_MOSQUITTO=true
+        - SUPPORT_MAC_BLOCKING=true
+    networks:
+      vanetzalan0:
+        ipv4_address: 192.168.98.10
+    sysctls:      
+        kernel.msgmax:  65536     # Maximum size of a single message tio 65536 bytes 
+        kernel.msgmnb:  65536     # Message queue can hold up to 65536 bytes in total
+    logging:
+     driver: none                 # Dissables loggin for the container. No log messages will be captured
+
+  boat2_broker:
+    hostname: broker2
+    container_name:  boat2_broker
+    restart: always
+    image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+    cap_add:
+        - "NET_ADMIN"
+    environment:
+        - VANETZA_STATION_ID=52
+        - VANETZA_STATION_TYPE=15
+        - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:02
+        - VANETZA_INTERFACE=br0
+        - START_EMBEDDED_MOSQUITTO=true
+        - SUPPORT_MAC_BLOCKING=true
+    networks:
+      vanetzalan0:
+        ipv4_address: 192.168.98.11
+    sysctls:      
+        kernel.msgmax:  65536     # Maximum size of a single message tio 65536 bytes 
+        kernel.msgmnb:  65536     # Message queue can hold up to 65536 bytes in total
+    logging:
+     driver: none                 # Dissables loggin for the container. No log messages will be captured
+
+  boat3_broker:
+    hostname: broker3
+    container_name:  boat3_broker
+    restart: always
+    image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+    cap_add:
+        - "NET_ADMIN"
+    environment:
+        - VANETZA_STATION_ID=53
+        - VANETZA_STATION_TYPE=15
+        - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:03
+        - VANETZA_INTERFACE=br0
+        - START_EMBEDDED_MOSQUITTO=true
+        - SUPPORT_MAC_BLOCKING=true
+    networks:
+      vanetzalan0:
+        ipv4_address: 192.168.98.12
+    sysctls:      
+        kernel.msgmax:  65536     # Maximum size of a single message tio 65536 bytes 
+        kernel.msgmnb:  65536     # Message queue can hold up to 65536 bytes in total
+    logging:
+     driver: none                 # Dissables loggin for the container. No log messages will be captured
+
+  ##
+    
+  boat1:
+    hostname: boat1
+    container_name: boat1
+    build:
+      context: ./backend
+    environment:
+      - BOAT_ID= 1
+      - BROKER_IP= 192.168.98.10
+      - START_POINT= -25.875 , 37.8645
+      - MOV_AMT= 5
+    networks:
+      vanetzalan0:
+        ipv4_address: 192.168.98.20
+    depends_on:
+      - boat1_broker
+
+  boat2:
+    hostname: boat2
+    container_name: boat2
+    build:
+      context: ./backend
+    environment:
+      - BOAT_ID= 2
+      - BROKER_IP= 192.168.98.12
+      - START_POINT= -25.875 , 37.8645
+      - MOV_AMT= 5
+    networks:
+      vanetzalan0:
+        ipv4_address: 192.168.98.30
+    depends_on:
+      - boat2_broker
+
+  boat3:
+    hostname: boat3
+    container_name: boat3
+    build:
+      context: ./backend
+    environment:
+      - BOAT_ID= 3
+      - BROKER_IP= 192.168.98.13
+      - START_POINT= -25.875 , 37.8645
+      - MOV_AMT= 5
+    networks:
+      vanetzalan0:
+        ipv4_address: 192.168.98.40
+    depends_on:
+      - boat3_broker
+
+networks:
+  vanetzalan0:
+    external: true
+    
